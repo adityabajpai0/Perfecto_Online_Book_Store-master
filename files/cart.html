@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/cssFiles/cart-style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+
+  <script
+    src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
+    type="text/javascript"
+  ></script>
+  <script src="jquery-3.3.1.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(() => {
+      $.ajax({
+        type: "POST",
+        url: "customer_order_list/",
+        timeout: 500,
+        data: { cart: localStorage.getItem("cart") }
+      });
+    });
+  </script>
+
+  <script type="text/javascript">
+    var order_in = localStorage.getItem("cart");
+    var spliting = order_in.split(";");
+    let text = "";
+    var total = 0;
+
+    $(document).ready(() => {
+      for (let i = 0; i < spliting.length; i++) {
+        $.ajax({
+          url: "book_detail_rows_all/",
+          type: "GET",
+          dataType: "json",
+          success: data => {
+            var text_book =
+              '<p><a href="#">' +
+              data[spliting[i] - 1].BookName +
+              '</a> <span class="price">' +
+              data[spliting[i] - 1].BookPrice +
+              "</span></p>";
+            total = total + data[spliting[i] - 1].BookPrice;
+            if (i == spliting.length - 1) {
+              $("<b>" + total + "</b>").appendTo(
+                document.getElementById("book-cart-total")
+              );
+              $("<b>" + spliting.length + "</b>").appendTo(
+                document.getElementById("book-cart-length")
+              );
+            }
+
+            $(text_book).appendTo(document.getElementById("book-cart"));
+          }
+        });
+      }
+    });
+  </script>
+
+  <body>
+    <a href="/#">
+      <i
+        class="fa fa-arrow-circle-left tm-nav-fa"
+        style="color: #523b2c; font-size: 2em;"
+      ></i
+    ></a>
+    <h2>Checkout</h2>
+    <div class="row">
+      <div class="col-75">
+        <div class="container">
+          <form action="/cart_fin" method="POST">
+            <div class="row">
+              <div class="col-50">
+                <h3>Billing Address</h3>
+                <label for="fname"><i class="fa fa-user"></i> First Name</label>
+                <input
+                  type="text"
+                  id="fname"
+                  name="create_first_name"
+                  placeholder="Please input your Firstname"
+                  required
+                />
+                <label for="lname"><i class="fa fa-user"></i> Last Name </label>
+                <input
+                  type="text"
+                  id="lname"
+                  name="create_last_name"
+                  placeholder="Please input your Lastname"
+                  required
+                />
+                <label for="age"><i class="fa fa-heart-o"></i> Age </label>
+                <input
+                  type="int"
+                  id="age"
+                  name="create_age"
+                  placeholder="Please input age"
+                  required
+                />
+
+                <label for="gender"
+                  ><i class="fa fa-venus-mars"></i> Gender
+                </label>
+                <select name="create_gender">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+
+                <label for="adr"
+                  ><i class="fa fa-address-card-o"></i> Address</label
+                >
+                <input
+                  type="text"
+                  id="adr"
+                  name="create_address"
+                  placeholder="Please input your address"
+                  required
+                />
+                <label for="city"><i class="fa fa-institution"></i> City</label>
+                <input
+                  type="text"
+                  id="city"
+                  name="create_city"
+                  placeholder="Please input your city"
+                  required
+                />
+
+                <div class="row">
+                  <div class="col-50">
+                    <label for="zip">Zip</label>
+                    <input
+                      type="text"
+                      id="zip"
+                      name="create_zip"
+                      placeholder="Please input your zip code"
+                      required
+                    />
+                  </div>
+                  <div class="col-50">
+                    <label for="state">Country</label>
+                    <input
+                      type="text"
+                      id="country"
+                      name="create_country"
+                      placeholder="Please input your country"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-50">
+                <h3>Payment</h3>
+                <label for="fname">Accepted Cards</label>
+                <div class="icon-container">
+                  <i class="fa fa-cc-visa" style="color:navy;"></i>
+                  <i class="fa fa-cc-amex" style="color:blue;"></i>
+                  <i class="fa fa-cc-mastercard" style="color:red;"></i>
+                  <i class="fa fa-cc-discover" style="color:orange;"></i>
+                </div>
+                <label for="cname">Name on Card</label>
+                <input
+                  type="text"
+                  id="cname"
+                  name="cardname"
+                  placeholder="Please input card holder name"
+                />
+                <label for="ccnum">Credit card number</label>
+                <input
+                  type="text"
+                  id="ccnum"
+                  name="cardnumber"
+                  placeholder="Please input your credit card number"
+                />
+                <label for="expmonth">Exp Month</label>
+                <input
+                  type="text"
+                  id="expmonth"
+                  name="expmonth"
+                  placeholder="Please input expired month"
+                />
+                <div class="row">
+                  <div class="col-50">
+                    <label for="expyear">Exp Year</label>
+                    <input
+                      type="text"
+                      id="expyear"
+                      name="expyear"
+                      placeholder="Please input expired year"
+                    />
+                  </div>
+                  <div class="col-50">
+                    <label for="cvv">CVV</label>
+                    <input
+                      type="text"
+                      id="cvv"
+                      name="cvv"
+                      placeholder="Please your card's cvv"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <label>
+              <input type="checkbox" checked="checked" name="sameadr" />
+              Shipping address same as billing
+            </label>
+            <input type="submit" value="Continue to checkout" class="btn" />
+          </form>
+        </div>
+      </div>
+      <div class="col-25">
+        <div class="container">
+          <h4>
+            Cart
+            <span class="price" style="color:black"
+              ><i class="fa fa-shopping-cart"></i>
+              <div id="book-cart-length"></div
+            ></span>
+          </h4>
+          <div id="book-cart"></div>
+          <tbody id="items"></tbody>
+          <hr />
+          <p>
+            Total
+            <span class="price" style="color:black"
+              ><div id="book-cart-total"></div
+            ></span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
